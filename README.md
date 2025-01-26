@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cypher Compliance App
+
+A Next.js-based compliance management application with authentication and dashboard features.
+
+## Project Structure
+
+```
+cypher-compliance-app/
+├── config/                  # Configuration files
+│   ├── eslint/             # ESLint configuration
+│   ├── next/               # Next.js configuration
+│   ├── postcss/            # PostCSS configuration
+│   └── typescript/         # TypeScript configuration
+├── prisma/                 # Database schema and migrations
+├── public/                 # Static assets
+├── src/
+│   ├── app/               # Next.js App Router pages
+│   ├── components/        # React components
+│   │   ├── providers/     # Context providers
+│   │   └── ui/           # UI components
+│   ├── lib/              # Core business logic
+│   ├── types/            # TypeScript type definitions
+│   └── utils/            # Utility functions
+├── tests/                 # Test files
+└── docs/                 # Documentation
+```
+
+## Prerequisites
+
+- Node.js 18.x or later
+- npm or yarn
+- PostgreSQL database (for Prisma)
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/cypher_compliance"
+
+# Authentication
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key"
+
+# Email (Resend)
+RESEND_API_KEY="your-resend-api-key"
+```
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+2. Set up the database:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Features
+
+- Next.js 13+ App Router
+- Authentication with NextAuth.js
+- Prisma ORM for database management
+- Modern UI with Tailwind CSS and shadcn/ui
+- TypeScript support
+- ESLint configuration
+- Responsive dashboard layout
+
+## Development
+
+### File Structure Conventions
+
+- Place new pages in `src/app/`
+- Add new components in `src/components/`
+- Define types in `src/types/`
+- Add utility functions in `src/utils/`
+- Place core business logic in `src/lib/`
+
+### Best Practices
+
+- Follow TypeScript strict mode guidelines
+- Write tests for new features
+- Use conventional commits
+- Keep components small and focused
+- Follow the Next.js App Router conventions
+
+## Testing
 
 ```bash
-npm run dev
+npm run test
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The app is optimized for deployment on Vercel:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Push your code to GitHub
+2. Import your repository to Vercel
+3. Set up environment variables
+4. Deploy!
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
