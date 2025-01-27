@@ -2,229 +2,254 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { useSession, signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
-  FileBarChart2,
   Shield,
-  FileText,
   Settings,
-  User,
-  HelpCircle,
   Menu,
   X,
-  LogOut,
-  ChevronUp,
+  ChevronRight,
   Bell,
-  Terminal,
-  Network
+  User,
+  LogOut,
+  HelpCircle,
+  FileText,
+  Building2,
+  CheckCircle2,
+  Users,
+  Clock,
+  AlertCircle,
+  FileBarChart,
+  BookOpen,
 } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 
-const mainNavItems = [
+const navigation = [
   {
-    title: "Dashboard",
+    name: "Dashboard",
     href: "/dashboard",
-    icon: LayoutDashboard
+    icon: LayoutDashboard,
+    badge: null
   },
   {
-    title: "Overview",
-    href: "/dashboard/overview",
-    icon: FileBarChart2
-  },
-  {
-    title: "Standards",
-    href: "/dashboard/standards",
-    icon: Shield
-  },
-  {
-    title: "Reports & Analytics",
-    href: "/dashboard/reports",
-    icon: FileText
-  },
-]
-
-const bottomNavItems = [
-  {
-    title: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings
-  },
-  {
-    title: "Support",
-    href: "/dashboard/support",
-    icon: HelpCircle
+    name: "Standards",
+    href: "/standards",
+    icon: Shield,
+    badge: "4"
   }
 ]
 
+const quickActions = [
+  { name: "View Reports", href: "/reports", icon: FileBarChart },
+  { name: "Documentation", href: "/docs", icon: BookOpen },
+  { name: "Help Center", href: "/help", icon: HelpCircle },
+]
+
+const userNavigation = [
+  { 
+    name: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
+  { 
+    name: "Help",
+    href: "/support",
+    icon: HelpCircle,
+  },
+  { 
+    name: "Sign out",
+    href: "/auth/signout",
+    icon: LogOut,
+  },
+]
+
+const organizationData = {
+  name: "MetaWorks Technologies",
+  type: "Technology Company",
+  plan: "Enterprise",
+  standards: [
+    { name: "SAMA", status: "Active", lastAudit: "2024-12-15" },
+    { name: "NCA ECC", status: "Active", lastAudit: "2024-11-30" },
+    { name: "ISO 27001", status: "Pending", lastAudit: null },
+    { name: "PDPL", status: "Active", lastAudit: "2024-12-01" },
+  ]
+}
+
 export default function DashboardLayout({
-  children
+  children,
 }: {
   children: React.ReactNode
 }) {
   const pathname = usePathname()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const { data: session } = useSession()
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-cyber-black">
-      {/* Mobile menu button */}
+    <div className="relative min-h-screen">
+      {/* Sidebar Toggle Button (Mobile) */}
       <button
-        className="fixed top-4 left-4 z-50 p-2 rounded-md md:hidden bg-cyber-dark border-primary/20 hover:bg-cyber-darker transition-colors"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="fixed top-4 left-4 z-50 p-2 rounded-lg glass-effect md:hidden"
       >
         {isSidebarOpen ? (
-          <X className="h-6 w-6 text-primary" />
+          <X className="h-6 w-6 text-white" />
         ) : (
-          <Menu className="h-6 w-6 text-primary" />
+          <Menu className="h-6 w-6 text-white" />
         )}
       </button>
 
       {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed left-0 top-0 z-40 h-screen border-r border-primary/20",
-          "w-64 flex flex-col bg-cyber-darker/80 backdrop-blur-xl",
-          "transition-transform duration-200",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-          "md:translate-x-0"
-        )}
-      >
-        {/* Logo */}
-        <div className="flex h-16 items-center gap-2 border-b border-primary/20 px-6">
-          <div className="relative">
-            <Network className="h-6 w-6 text-primary animate-pulse" />
-            <Terminal className="h-6 w-6 text-primary absolute inset-0 animate-pulse" style={{ animationDelay: '1s' }} />
+      <aside className={cn(
+        "fixed left-0 top-0 z-40 h-screen glass-effect border-r border-white/5",
+        "w-72 flex flex-col",
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+        "md:translate-x-0 transition-transform duration-300 ease-in-out"
+      )}>
+        {/* Logo Section */}
+        <div className="p-6">
+          <div className="flex items-center gap-3">
+            <div className="relative h-8 w-8">
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-cyan-500 rounded-lg animate-pulse" />
+              <div className="absolute inset-0.5 bg-[#1E2631] rounded-lg flex items-center justify-center">
+                <Shield className="h-5 w-5 text-blue-500" />
+              </div>
+            </div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              Cypher Compliance
+            </h1>
           </div>
-          <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-cyber-blue bg-clip-text text-transparent">
-            Cypher Compliance
-          </h2>
         </div>
 
-        {/* Main navigation */}
-        <div className="flex-1 flex flex-col gap-4">
-          <nav className="flex-1 space-y-1 px-3 py-4">
-            {mainNavItems.map((item) => {
+        {/* Main Navigation */}
+        <nav className="flex-1 px-4">
+          <div className="space-y-1">
+            {navigation.map((item) => {
+              const Icon = item.icon
               const isActive = pathname === item.href
               return (
                 <Link
-                  key={item.href}
+                  key={item.name}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-                    "hover:bg-primary/10 hover:text-primary hover:glow-text",
-                    isActive && "bg-primary/10 text-primary glow-text"
+                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200",
+                    isActive
+                      ? "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-white"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
                   )}
                 >
-                  <item.icon className={cn(
-                    "h-5 w-5 transition-transform",
-                    isActive && "animate-pulse"
+                  <Icon className={cn(
+                    "h-5 w-5 transition-colors",
+                    isActive && "text-blue-400"
                   )} />
-                  {item.title}
+                  <span className="flex-1">{item.name}</span>
+                  {item.badge && (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
+                      {item.badge}
+                    </span>
+                  )}
+                  {isActive && (
+                    <ChevronRight className="h-4 w-4 text-blue-400" />
+                  )}
                 </Link>
               )
             })}
-          </nav>
+          </div>
 
-          {/* Bottom section */}
-          <div className="border-t border-primary/20">
-            <nav className="space-y-1 px-3 py-4">
-              {bottomNavItems.map((item) => {
-                const isActive = pathname === item.href
+          {/* Quick Actions */}
+          <div className="mt-8">
+            <h2 className="px-4 text-xs font-semibold text-white/40 uppercase tracking-wider mb-2">
+              Quick Actions
+            </h2>
+            <div className="space-y-1">
+              {quickActions.map((action) => {
+                const Icon = action.icon
                 return (
                   <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-                      "hover:bg-primary/10 hover:text-primary",
-                      isActive && "bg-primary/10 text-primary"
-                    )}
+                    key={action.name}
+                    href={action.href}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
                   >
-                    <item.icon className="h-5 w-5" />
-                    {item.title}
+                    <Icon className="h-5 w-5" />
+                    <span>{action.name}</span>
                   </Link>
                 )
               })}
-            </nav>
-
-            {/* User section */}
-            <div className="p-4 mt-auto border-t border-primary/20">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    className="w-full justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-                  >
-                    <Avatar className="h-8 w-8 border border-primary/20">
-                      <AvatarImage src={session?.user?.image || ''} />
-                      <AvatarFallback className="bg-cyber-dark text-primary">
-                        {session?.user?.name?.charAt(0) || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 text-left">
-                      <p className="text-sm font-medium">{session?.user?.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {session?.user?.email}
-                      </p>
-                    </div>
-                    <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent 
-                  align="end" 
-                  className="w-56 bg-cyber-darker border-primary/20"
-                >
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-primary/20" />
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard/profile" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard/settings" className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-primary/20" />
-                  <DropdownMenuItem
-                    className="text-red-500 cursor-pointer focus:text-red-500"
-                    onClick={() => signOut()}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
+        </nav>
+
+        {/* User Profile */}
+        <div className="relative border-t border-white/10 mt-auto">
+          <button
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="relative w-full flex items-center gap-3 p-4 hover:bg-white/5 transition-colors group"
+          >
+            <div className="relative h-9 w-9 rounded-full overflow-hidden">
+              <Image
+                src="/avatar.jpg"
+                alt="User avatar"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-medium text-white">Mohammed Alharbi</p>
+              <p className="text-xs text-white/50">Administrator</p>
+            </div>
+            <ChevronRight className={cn(
+              "h-4 w-4 text-white/40 transition-transform duration-200",
+              isProfileOpen && "rotate-90"
+            )} />
+          </button>
+
+          {/* Profile Dropdown */}
+          {isProfileOpen && (
+            <div className="absolute bottom-full left-0 right-0 mb-1 glass-effect rounded-lg overflow-hidden border border-white/10 backdrop-blur-xl bg-black/50">
+              {userNavigation.map((item) => {
+                const Icon = item.icon
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors",
+                      item.name === "Sign out" && "text-red-400 hover:text-red-300"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.name}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
         </div>
       </aside>
 
-      {/* Main content */}
-      <main
-        className={cn(
-          "min-h-screen transition-all duration-200 bg-cyber-black",
-          "relative overflow-hidden",
-          isSidebarOpen ? "md:ml-64" : ""
-        )}
-      >
-        <div className="matrix-bg absolute inset-0 opacity-50" />
-        <div className="relative container mx-auto p-6 pt-16 md:pt-6">
+      {/* Main Content */}
+      <main className={cn(
+        "transition-all duration-300",
+        isSidebarOpen ? "md:pl-72" : "md:pl-0"
+      )}>
+        {/* Top Navigation Bar */}
+        <div className="fixed top-0 right-0 left-0 md:left-72 h-16 glass-effect border-b border-white/5 z-30">
+          <div className="flex items-center justify-end h-full px-6 gap-4">
+            <button className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-blue-500" />
+            </button>
+            <div className="h-8 w-px bg-white/10" />
+            <button className="flex items-center gap-2 text-white/60 hover:text-white transition-colors">
+              <User className="h-5 w-5" />
+              <span className="text-sm">Profile</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Page Content */}
+        <div className="pt-16">
           {children}
         </div>
       </main>
