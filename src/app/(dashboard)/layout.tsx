@@ -6,45 +6,68 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
-  LayoutDashboard,
+  Home,
+  ClipboardList,
+  PieChart,
+  BookOpen,
   Shield,
-  Settings,
   Menu,
   X,
   ChevronRight,
+  HelpCircle,
+  FileText,
+  LifeBuoy,
+  Settings,
   Bell,
   User,
   LogOut,
-  HelpCircle,
-  FileText,
+  FileBarChart,
   Building2,
   CheckCircle2,
   Users,
   Clock,
   AlertCircle,
-  FileBarChart,
-  BookOpen,
 } from "lucide-react"
 
-const navigation = [
+const sidebarItems = [
   {
-    name: "Dashboard",
+    title: "Dashboard",
+    icon: Home,
     href: "/dashboard",
-    icon: LayoutDashboard,
-    badge: null
   },
   {
-    name: "Standards",
-    href: "/standards",
+    title: "Overview",
+    icon: BookOpen,
+    href: "/overview",
+  },
+  {
+    title: "Standards",
     icon: Shield,
-    badge: "4"
-  }
+    href: "/standards",
+  },
+  {
+    title: "Reports & Analytics",
+    icon: PieChart,
+    href: "/reports",
+  },
 ]
 
 const quickActions = [
-  { name: "View Reports", href: "/reports", icon: FileBarChart },
-  { name: "Documentation", href: "/docs", icon: BookOpen },
-  { name: "Help Center", href: "/help", icon: HelpCircle },
+  { 
+    name: "Help",
+    href: "/help",
+    icon: HelpCircle,
+  },
+  { 
+    name: "Documentation",
+    href: "/docs",
+    icon: FileText,
+  },
+  { 
+    name: "Support",
+    href: "/support",
+    icon: LifeBuoy,
+  },
 ]
 
 const userNavigation = [
@@ -125,12 +148,12 @@ export default function DashboardLayout({
         {/* Main Navigation */}
         <nav className="flex-1 px-4">
           <div className="space-y-1">
-            {navigation.map((item) => {
+            {sidebarItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
               return (
                 <Link
-                  key={item.name}
+                  key={item.title}
                   href={item.href}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200",
@@ -143,12 +166,7 @@ export default function DashboardLayout({
                     "h-5 w-5 transition-colors",
                     isActive && "text-blue-400"
                   )} />
-                  <span className="flex-1">{item.name}</span>
-                  {item.badge && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
-                      {item.badge}
-                    </span>
-                  )}
+                  <span className="flex-1">{item.title}</span>
                   {isActive && (
                     <ChevronRight className="h-4 w-4 text-blue-400" />
                   )}
