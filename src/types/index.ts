@@ -1,4 +1,17 @@
-import { UserRole, ComplianceStatus } from "@prisma/client"
+// Define enums locally to match Prisma schema
+export enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN",
+  COMPLIANCE_MANAGER = "COMPLIANCE_MANAGER",
+  AUDITOR = "AUDITOR"
+}
+
+export enum ComplianceStatus {
+  PENDING = "PENDING",
+  IN_PROGRESS = "IN_PROGRESS", 
+  COMPLETED = "COMPLETED",
+  OVERDUE = "OVERDUE"
+}
 
 export interface User {
   id: string
