@@ -5,7 +5,16 @@ import { PrismaClient } from "@prisma/client"
 import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
 
-const prisma = new PrismaClient()
+// Ensure Prisma client is initialized only once
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
+
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    log: ['query'],
+  })
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
