@@ -248,11 +248,11 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <main className={cn(
-        "transition-all duration-300",
-        isSidebarOpen ? "md:pl-72" : "md:pl-0"
+        "min-h-screen transition-all duration-300",
+        isSidebarOpen ? "md:pl-72" : ""
       )}>
         {/* Top Navigation Bar */}
-        <div className="fixed top-0 right-0 left-0 md:left-72 h-16 glass-effect border-b border-white/5 z-30">
+        <div className="sticky top-0 h-16 glass-effect border-b border-white/5 z-30">
           <div className="flex items-center justify-end h-full px-6 gap-4">
             <button className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors relative">
               <Bell className="h-5 w-5" />
@@ -267,7 +267,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Page Content */}
-        <div className="pt-16">
+        <div className="h-[calc(100vh-4rem)] overflow-auto">
           {children}
         </div>
       </main>

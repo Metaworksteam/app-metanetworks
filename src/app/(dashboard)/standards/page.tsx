@@ -1,194 +1,416 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { PDFViewer } from "@/components/pdf-viewer"
+import { OrganizationForm } from "@/components/organization-form"
 import {
-  ChevronRight,
-  FileText,
-  Shield,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { ChevronDown, ChevronRight, ChevronLeft, Download } from "lucide-react"
 
-const standards = [
+interface Control {
+  id: string
+  name: string
+  document: string
+  description: string
+  policies?: any[]
+}
+
+const ncaDomains = [
   {
-    id: "sama",
-    name: "SAMA",
-    icon: "/sama-icon.png",
-    description: "Saudi Central Bank Compliance Framework",
-    progress: 75,
-    domains: [
-      {
-        id: "gov",
-        name: "Governance",
-        controls: [
-          { id: "gov-1", name: "Management Oversight", status: "completed", document: "/docs/sama/governance.pdf" },
-          { id: "gov-2", name: "Risk Assessment", status: "in-progress", document: "/docs/sama/risk.pdf" },
-        ]
+    id: "gov",
+    name: "1. Cybersecurity Governance",
+    description: "Establish and maintain a cybersecurity governance framework",
+    controls: [
+      { 
+        id: "gov-1-1", 
+        name: "1-1 Cybersecurity Strategy", 
+        document: "/docs/nca/gov-1-1.pdf",
+        description: "Develop and implement organization-wide cybersecurity strategy"
       },
-      {
-        id: "sec",
-        name: "Security Operations",
-        controls: [
-          { id: "sec-1", name: "Access Control", status: "completed", document: "/docs/sama/access.pdf" },
-          { id: "sec-2", name: "Incident Management", status: "pending", document: "/docs/sama/incident.pdf" },
-        ]
+      { 
+        id: "gov-1-2", 
+        name: "1-2 Cybersecurity Management", 
+        document: "/docs/nca/gov-1-2.pdf",
+        description: "Establish cybersecurity management structure and processes"
+      },
+      { 
+        id: "gov-1-3", 
+        name: "1-3 Cybersecurity Policies and Procedures", 
+        document: "/docs/nca/gov-1-3.pdf",
+        description: "Develop and maintain cybersecurity policies and procedures"
+      },
+      { 
+        id: "gov-1-4", 
+        name: "1-4 Cybersecurity Roles and Responsibilities", 
+        document: "/docs/nca/gov-1-4.pdf",
+        description: "Define and assign cybersecurity roles and responsibilities"
+      },
+      { 
+        id: "gov-1-5", 
+        name: "1-5 Cybersecurity Risk Management", 
+        document: "/docs/nca/gov-1-5.pdf",
+        description: "Implement cybersecurity risk management processes"
+      },
+      { 
+        id: "gov-1-6", 
+        name: "1-6 Cybersecurity in IT Project Management", 
+        document: "/docs/nca/gov-1-6.pdf",
+        description: "Integrate cybersecurity in IT project management"
+      },
+      { 
+        id: "gov-1-7", 
+        name: "1-7 Compliance with Cybersecurity Standards", 
+        document: "/docs/nca/gov-1-7.pdf",
+        description: "Ensure compliance with cybersecurity standards and regulations"
+      },
+      { 
+        id: "gov-1-8", 
+        name: "1-8 Periodic Cybersecurity Review and Audit", 
+        document: "/docs/nca/gov-1-8.pdf",
+        description: "Conduct regular cybersecurity reviews and audits"
+      },
+      { 
+        id: "gov-1-9", 
+        name: "1-9 Cybersecurity in Human Resources", 
+        document: "/docs/nca/gov-1-9.pdf",
+        description: "Integrate cybersecurity in HR processes"
+      },
+      { 
+        id: "gov-1-10", 
+        name: "1-10 Cybersecurity Awareness and Training", 
+        document: "/docs/nca/gov-1-10.pdf",
+        description: "Implement cybersecurity awareness and training programs"
       }
     ]
   },
   {
-    id: "nca",
-    name: "NCA ECC",
-    icon: "/nca-icon.png",
-    description: "National Cybersecurity Authority Essential Cybersecurity Controls",
-    progress: 60,
-    domains: [
-      {
-        id: "cyber",
-        name: "Cybersecurity",
-        controls: [
-          { id: "cyb-1", name: "Asset Management", status: "completed", document: "/docs/nca/asset.pdf" },
-          { id: "cyb-2", name: "Cryptography", status: "in-progress", document: "/docs/nca/crypto.pdf" },
-        ]
+    id: "def",
+    name: "2. Cybersecurity Defense",
+    description: "Implement technical security controls and measures",
+    controls: [
+      { 
+        id: "def-2-1", 
+        name: "2-1 Asset Management", 
+        document: "/docs/nca/def-2-1.pdf",
+        description: "Manage and protect organizational assets"
+      },
+      { 
+        id: "def-2-2", 
+        name: "2-2 Identity and Access Management", 
+        document: "/docs/nca/def-2-2.pdf",
+        description: "Control access to information systems"
+      },
+      { 
+        id: "def-2-3", 
+        name: "2-3 Information Systems Protection", 
+        document: "/docs/nca/def-2-3.pdf",
+        description: "Protect information systems and processing facilities"
+      },
+      { 
+        id: "def-2-4", 
+        name: "2-4 Email Protection", 
+        document: "/docs/nca/def-2-4.pdf",
+        description: "Implement email security controls"
+      },
+      { 
+        id: "def-2-5", 
+        name: "2-5 Network Security Management", 
+        document: "/docs/nca/def-2-5.pdf",
+        description: "Manage network security"
+      },
+      { 
+        id: "def-2-6", 
+        name: "2-6 Mobile Devices Security", 
+        document: "/docs/nca/def-2-6.pdf",
+        description: "Secure mobile devices and applications"
+      },
+      { 
+        id: "def-2-7", 
+        name: "2-7 Data and Information Protection", 
+        document: "/docs/nca/def-2-7.pdf",
+        description: "Protect organizational data and information"
+      },
+      { 
+        id: "def-2-8", 
+        name: "2-8 Cryptography", 
+        document: "/docs/nca/def-2-8.pdf",
+        description: "Implement cryptographic controls"
+      },
+      { 
+        id: "def-2-9", 
+        name: "2-9 Backup and Recovery Management", 
+        document: "/docs/nca/def-2-9.pdf",
+        description: "Manage backup and recovery processes"
+      },
+      { 
+        id: "def-2-10", 
+        name: "2-10 Vulnerability Management", 
+        document: "/docs/nca/def-2-10.pdf",
+        description: "Manage security vulnerabilities"
+      },
+      { 
+        id: "def-2-11", 
+        name: "2-11 Penetration Testing", 
+        document: "/docs/nca/def-2-11.pdf",
+        description: "Conduct security testing and assessments"
+      },
+      { 
+        id: "def-2-12", 
+        name: "2-12 Cybersecurity Event Logs Management", 
+        document: "/docs/nca/def-2-12.pdf",
+        description: "Manage security event logs and monitoring"
+      },
+      { 
+        id: "def-2-13", 
+        name: "2-13 Cybersecurity Incident Management", 
+        document: "/docs/nca/def-2-13.pdf",
+        description: "Manage cybersecurity incidents and threats"
+      },
+      { 
+        id: "def-2-14", 
+        name: "2-14 Physical Security", 
+        document: "/docs/nca/def-2-14.pdf",
+        description: "Implement physical security controls"
+      },
+      { 
+        id: "def-2-15", 
+        name: "2-15 Web Application Security", 
+        document: "/docs/nca/def-2-15.pdf",
+        description: "Secure web applications"
       }
     ]
   },
-  // Add other standards here
+  {
+    id: "res",
+    name: "3. Cybersecurity Resilience",
+    description: "Ensure business continuity and incident recovery",
+    controls: [
+      { 
+        id: "res-3-1", 
+        name: "3-1 Business Continuity Management", 
+        document: "/docs/nca/res-3-1.pdf",
+        description: "Implement cybersecurity aspects of BCM"
+      }
+    ]
+  },
+  {
+    id: "tpc",
+    name: "4. Third-Party and Cloud Computing Cybersecurity",
+    description: "Manage third-party and cloud security risks",
+    controls: [
+      { 
+        id: "tpc-4-1", 
+        name: "4-1 Third-Party Cybersecurity", 
+        document: "/docs/nca/tpc-4-1.pdf",
+        description: "Manage third-party cybersecurity risks"
+      },
+      { 
+        id: "tpc-4-2", 
+        name: "4-2 Cloud Computing Cybersecurity", 
+        document: "/docs/nca/tpc-4-2.pdf",
+        description: "Secure cloud computing environments"
+      }
+    ]
+  },
+  {
+    id: "ics",
+    name: "5. ICS Cybersecurity",
+    description: "Protect Industrial Control Systems",
+    controls: [
+      { 
+        id: "ics-5-1", 
+        name: "5-1 ICS Protection", 
+        document: "/docs/nca/ics-5-1.pdf",
+        description: "Protect Industrial Control Systems and Devices"
+      }
+    ]
+  }
 ]
 
 export default function StandardsPage() {
-  const [selectedStandard, setSelectedStandard] = useState(standards[0])
-  const [selectedDomain, setSelectedDomain] = useState(standards[0].domains[0])
-  const [selectedControl, setSelectedControl] = useState(null)
-  const [showPdfViewer, setShowPdfViewer] = useState(false)
+  const [expandedDomains, setExpandedDomains] = useState<string[]>([])
+  const [selectedDomain, setSelectedDomain] = useState<any>(null)
+  const [selectedControl, setSelectedControl] = useState<any>(null)
+  const [formData, setFormData] = useState<any>(null)
 
-  const handleControlClick = (control) => {
+  const toggleDomain = (domain: any) => {
+    setExpandedDomains((prev) =>
+      prev.includes(domain.id)
+        ? prev.filter((id) => id !== domain.id)
+        : [...prev, domain.id]
+    )
+    setSelectedDomain(domain)
+  }
+
+  const handleControlClick = (domain: any, control: any) => {
     setSelectedControl(control)
-    setShowPdfViewer(true)
+    setSelectedDomain(domain)
+  }
+
+  const handleFormSubmit = (data: any) => {
+    setFormData(data)
+    // Here you would typically save the data to your backend
+    console.log("Form data:", data)
+  }
+
+  const handleDownloadPDF = () => {
+    // Here you would generate the customized PDF with the form data
+    console.log("Downloading PDF with form data:", formData)
+  }
+
+  const findNextControl = () => {
+    if (!selectedDomain || !selectedControl) return null
+    const currentDomainIndex = ncaDomains.findIndex(d => d.id === selectedDomain.id)
+    const currentControlIndex = selectedDomain.controls.findIndex((c: Control) => c.id === selectedControl.id)
+    
+    if (currentControlIndex < selectedDomain.controls.length - 1) {
+      return selectedDomain.controls[currentControlIndex + 1]
+    } else if (currentDomainIndex < ncaDomains.length - 1) {
+      return ncaDomains[currentDomainIndex + 1].controls[0]
+    }
+    return null
+  }
+
+  const handleNextControl = () => {
+    const nextControl = findNextControl()
+    if (nextControl) {
+      const nextDomain = selectedControl.id === nextControl.id ? 
+        selectedDomain : 
+        ncaDomains.find(d => d.controls.some(c => c.id === nextControl.id))
+      handleControlClick(nextDomain, nextControl)
+    }
   }
 
   return (
-    <div className="flex h-screen">
-      {/* Standards Sidebar */}
-      <div className="w-80 border-r border-white/10 glass-effect">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">Standards</h2>
-          <div className="space-y-3">
-            {standards.map((standard) => (
-              <button
-                key={standard.id}
-                onClick={() => {
-                  setSelectedStandard(standard)
-                  setSelectedDomain(standard.domains[0])
-                  setSelectedControl(null)
-                  setShowPdfViewer(false)
-                }}
-                className={cn(
-                  "w-full p-4 rounded-lg glass-effect flex items-center gap-3 transition-all duration-200",
-                  selectedStandard.id === standard.id
-                    ? "bg-white/10 border-blue-500/50"
-                    : "hover:bg-white/5"
-                )}
-              >
-                <div className="relative h-10 w-10">
-                  <Image
-                    src={standard.icon}
-                    alt={standard.name}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <div className="flex-1 text-left">
-                  <h3 className="text-sm font-medium text-white">{standard.name}</h3>
-                  <div className="mt-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"
-                      style={{ width: `${standard.progress}%` }}
-                    />
-                  </div>
-                </div>
-                <ChevronRight className="h-4 w-4 text-white/40" />
-              </button>
-            ))}
-          </div>
+    <div className="h-full flex flex-col">
+      <div className="flex justify-between items-center p-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div>
+          <h1 className="text-2xl font-bold">NCA Cybersecurity Framework</h1>
+          {selectedControl && (
+            <p className="text-muted-foreground">
+              {selectedDomain.name} / {selectedControl.name}
+            </p>
+          )}
         </div>
-      </div>
-
-      {/* Domains and Controls */}
-      <div className="flex-1 glass-effect-dark">
-        <div className="p-6">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-white mb-2">{selectedStandard.name}</h1>
-            <p className="text-white/60">{selectedStandard.description}</p>
+        {selectedControl && (
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setSelectedControl(null)}>
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleNextControl}
+              disabled={!findNextControl()}
+            >
+              Next
+              <ChevronRight className="h-4 w-4 ml-2" />
+            </Button>
+            <Button variant="outline" onClick={handleDownloadPDF}>
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </Button>
           </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            {selectedStandard.domains.map((domain) => (
-              <Card key={domain.id} className="glass-effect p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">{domain.name}</h3>
-                <div className="space-y-3">
-                  {domain.controls.map((control) => (
-                    <button
-                      key={control.id}
-                      onClick={() => handleControlClick(control)}
-                      className="w-full p-4 rounded-lg glass-effect hover:bg-white/5 transition-all duration-200"
+        )}
+      </div>
+      
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 min-h-0">
+        {!selectedControl ? (
+          <Card className="col-span-2 h-full">
+            <ScrollArea className="h-[calc(100vh-16rem)]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Domain</TableHead>
+                    <TableHead>Controls</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {ncaDomains.map((domain) => (
+                    <TableRow key={domain.id}>
+                      <TableCell className="font-medium">
+                        <Button
+                          variant="ghost"
+                          className="p-0"
+                          onClick={() => toggleDomain(domain)}
+                        >
+                          {expandedDomains.includes(domain.id) ? (
+                            <ChevronDown className="h-4 w-4 mr-2" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4 mr-2" />
+                          )}
+                          {domain.name}
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        {expandedDomains.includes(domain.id) && (
+                          <div className="space-y-2">
+                            {domain.controls.map((control) => (
+                              <Button
+                                key={control.id}
+                                variant="outline"
+                                className="w-full justify-start"
+                                onClick={() => handleControlClick(domain, control)}
+                              >
+                                {control.name}
+                              </Button>
+                            ))}
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </Card>
+        ) : (
+          <>
+            <div className="space-y-6">
+              <Card className="p-6">
+                <h2 className="text-xl font-semibold mb-4">{selectedControl.name}</h2>
+                <p className="text-muted-foreground mb-6">{selectedControl.description}</p>
+                
+                <h3 className="font-semibold mb-2">Relevant Policies & Procedures</h3>
+                <div className="space-y-2">
+                  {selectedControl.policies?.map((policy: any) => (
+                    <Button
+                      key={policy.name}
+                      variant="link"
+                      className="h-auto p-0 text-left"
+                      onClick={() => window.open(policy.url, '_blank')}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={cn(
-                          "h-8 w-8 rounded-full flex items-center justify-center",
-                          control.status === "completed" && "bg-green-500/20 text-green-500",
-                          control.status === "in-progress" && "bg-blue-500/20 text-blue-500",
-                          control.status === "pending" && "bg-amber-500/20 text-amber-500"
-                        )}>
-                          {control.status === "completed" && <CheckCircle className="h-5 w-5" />}
-                          {control.status === "in-progress" && <Shield className="h-5 w-5" />}
-                          {control.status === "pending" && <AlertCircle className="h-5 w-5" />}
-                        </div>
-                        <div className="flex-1 text-left">
-                          <h4 className="text-sm font-medium text-white">{control.name}</h4>
-                          <p className="text-xs text-white/60 capitalize">{control.status.replace("-", " ")}</p>
-                        </div>
-                        <FileText className="h-4 w-4 text-white/40" />
-                      </div>
-                    </button>
+                      {policy.name}
+                    </Button>
                   ))}
                 </div>
               </Card>
-            ))}
-          </div>
-        </div>
-      </div>
 
-      {/* PDF Viewer Modal */}
-      {showPdfViewer && selectedControl && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-[#1E2631] rounded-lg w-[90vw] h-[90vh] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white">
-                {selectedControl.name} Documentation
-              </h2>
-              <Button
-                variant="ghost"
-                onClick={() => setShowPdfViewer(false)}
-                className="text-white/60 hover:text-white"
-              >
-                Close
-              </Button>
+              <Card className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Organization Information</h2>
+                <OrganizationForm
+                  onSubmit={handleFormSubmit}
+                  defaultValues={formData}
+                />
+              </Card>
             </div>
-            <div className="h-[calc(90vh-8rem)] bg-white rounded-lg">
-              <iframe
-                src={selectedControl.document}
-                className="w-full h-full rounded-lg"
-                title={`${selectedControl.name} Documentation`}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Control Documentation</h2>
+              <PDFViewer pdfUrl={selectedControl.document} />
+            </Card>
+          </>
+        )}
+      </div>
     </div>
   )
 }

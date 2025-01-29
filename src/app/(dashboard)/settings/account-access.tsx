@@ -1,7 +1,62 @@
 "use client"
 
-import { Shield, AlertCircle } from "lucide-react"
-import { PROVIDER_RESTRICTIONS, ROLE_PERMISSIONS } from "@/lib/auth/permissions"
+import { Shield, AlertCircle, CheckCircle2 } from "lucide-react"
+
+interface Provider {
+  provider: string;
+  maxRole: string;
+  features: string[];
+}
+
+interface RolePermission {
+  role: string;
+  permissions: {
+    name: string;
+    description: string;
+  }[];
+}
+
+const PROVIDER_RESTRICTIONS: Provider[] = [
+  {
+    provider: "Google",
+    maxRole: "Editor",
+    features: ["Feature 1", "Feature 2"]
+  },
+  {
+    provider: "GitHub",
+    maxRole: "Viewer",
+    features: ["Feature 3", "Feature 4"]
+  },
+  {
+    provider: "Email",
+    maxRole: "Admin",
+    features: ["Feature 5", "Feature 6"]
+  }
+];
+
+const ROLE_PERMISSIONS: RolePermission[] = [
+  {
+    role: "Admin",
+    permissions: [
+      { name: "Permission 1", description: "Description 1" },
+      { name: "Permission 2", description: "Description 2" }
+    ]
+  },
+  {
+    role: "Editor",
+    permissions: [
+      { name: "Permission 3", description: "Description 3" },
+      { name: "Permission 4", description: "Description 4" }
+    ]
+  },
+  {
+    role: "Viewer",
+    permissions: [
+      { name: "Permission 5", description: "Description 5" },
+      { name: "Permission 6", description: "Description 6" }
+    ]
+  }
+];
 
 export default function AccountAccess() {
   return (
@@ -14,7 +69,7 @@ export default function AccountAccess() {
 
         {/* Provider Comparison */}
         <div className="grid grid-cols-3 gap-4">
-          {PROVIDER_RESTRICTIONS.map((provider) => (
+          {PROVIDER_RESTRICTIONS.map((provider: Provider) => (
             <div
               key={provider.provider}
               className="p-4 rounded-lg border border-white/10 space-y-4"
@@ -29,7 +84,7 @@ export default function AccountAccess() {
               </div>
 
               <div className="space-y-2">
-                {provider.features.map((feature, index) => (
+                {provider.features.map((feature: string, index: number) => (
                   <div
                     key={index}
                     className="flex items-start gap-2 text-sm text-white/60"
@@ -53,7 +108,7 @@ export default function AccountAccess() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {ROLE_PERMISSIONS.map((role) => (
+            {ROLE_PERMISSIONS.map((role: RolePermission) => (
               <div
                 key={role.role}
                 className="p-4 rounded-lg border border-white/10 space-y-3"
@@ -68,12 +123,12 @@ export default function AccountAccess() {
                 </div>
 
                 <div className="space-y-2">
-                  {role.permissions.map((permission, index) => (
+                  {role.permissions.map((permission: { name: string; description: string }, index: number) => (
                     <div
                       key={index}
                       className="flex items-start gap-2 text-sm"
                     >
-                      <Shield className="h-4 w-4 mt-0.5 flex-shrink-0 text-white/40" />
+                      <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-white/40" />
                       <div>
                         <div className="text-white/80">{permission.name}</div>
                         <div className="text-xs text-white/40">{permission.description}</div>
